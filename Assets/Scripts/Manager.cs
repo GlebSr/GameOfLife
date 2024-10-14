@@ -4,10 +4,12 @@ using UnityEngine.Assertions;
 namespace Assets.Scripts
 {
     public enum GameStateEnum : byte { Invalid, Wait, AcceptInput, Run }
+    public enum GameModeEnum : byte { SinglePlayer, Multiplayer}
     public static class Manager
     {    
         public static GameStateEnum GameState;
-
+        public static GameModeEnum GameMode;
+        
         public static GameObject CellPrefab;
         public static Material[] CellMaterials;
 
@@ -27,7 +29,9 @@ namespace Assets.Scripts
             CellMaterials = new[]
             {
                 Resources.Load<Material>("Materials/Dead"),
-                Resources.Load<Material>("Materials/Alive")
+                Resources.Load<Material>("Materials/Alive"),
+                Resources.Load<Material>("Materials/FirstPlayer"),
+                Resources.Load<Material>("Materials/SecondPlayer")
             };
 
             for (var i = 0; i < CellMaterials.Length; i++)
