@@ -12,15 +12,12 @@ public class CellTrigger : MonoBehaviour
         cell.NextAliveCellColor = color;
         cell.IsAlive = true;
     }
-    // Start is called before the first frame update
-    void Start()
+    private void OnMouseDown()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (Manager.GameState == GameStateEnum.AcceptInput)
+        {
+            cell.NextAliveCellColor = 1;
+            cell.IsAlive = !cell.IsAlive;
+        }
     }
 }

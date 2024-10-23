@@ -12,6 +12,7 @@ namespace Assets.Scripts
         
         public static GameObject CellPrefab;
         public static Material[] CellMaterials;
+        public static Material[] PlayerMaterials;
 
         public static bool Initialize()
         {
@@ -30,8 +31,13 @@ namespace Assets.Scripts
             {
                 Resources.Load<Material>("Materials/Dead"),
                 Resources.Load<Material>("Materials/Alive"),
-                Resources.Load<Material>("Materials/FirstPlayer"),
-                Resources.Load<Material>("Materials/SecondPlayer")
+                Resources.Load<Material>("Materials/FirstPlayerCell"),
+                Resources.Load<Material>("Materials/SecondPlayerCell")
+            };
+            PlayerMaterials = new[]
+            {
+                Resources.Load<Material>("Materials/Players/FirstPlayer"),
+                Resources.Load<Material>("Materials/Players/SecondPlayer"),
             };
 
             for (var i = 0; i < CellMaterials.Length; i++)

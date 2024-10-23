@@ -9,9 +9,13 @@ namespace Assets.Scripts
     public enum NextCellStateEnum : byte { NoChange, MakeDead, MakeAlive }
     public class Cell : MonoBehaviour
     {
+
+        [SerializeField] private Transform _spawnPosition;
+        public Transform SpawnPosition => _spawnPosition;
         private const int NumberOfNeighbors = 8;
         private Renderer _renderer;
         private int _cellState;
+        public int CellColor => _cellState;
 
         private Index[] _myNeighbors;
         private Index _me;
@@ -67,8 +71,8 @@ namespace Assets.Scripts
             var hMinusOne = h - 1;
 
             _renderer = GetComponent<Renderer>();
-            NextAliveCellColor = Random.Range(0, Manager.GameMode == GameModeEnum.Multiplayer ? 4 : 2);
-            IsAlive = NextAliveCellColor != 0;
+            NextAliveCellColor = 1;
+            IsAlive = false;
             NextCellState = NextCellStateEnum.NoChange;
             _myNeighbors = new Index[NumberOfNeighbors];
             _me = new Index { W = w, H = h};
@@ -141,14 +145,7 @@ namespace Assets.Scripts
             return Sum;
         }
 
-        private void OnMouseDown()
-        {
-            if (Manager.GameState == GameStateEnum.AcceptInput)
-            {
-                NextAliveCellColor = Random.Range(1, 4);
-                IsAlive = !IsAlive;
-            }
-        }
+        
 
         
     }

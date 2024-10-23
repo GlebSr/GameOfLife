@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
@@ -23,6 +25,8 @@ namespace Assets.Scripts
         private Cell[,] _cells;
         private int _width, _height;
         private bool _hasRunCoroutineFinished;
+
+        public event Action<int> CellRevived;
 
         public void Initialize(GameModeEnum gameMode)
         {
@@ -47,6 +51,12 @@ namespace Assets.Scripts
             }
             _cells = new Cell[_height, _width];
             PopulateGrid();
+            if (gameMode == GameModeEnum.Multiplayer)
+            {
+                Manager.GameState = GameStateEnum.Run;
+                _hasRunCoroutineFinished = false;
+                StartCoroutine(Run());
+            }
         }
         
         /*private void Awake()
@@ -111,6 +121,11 @@ namespace Assets.Scripts
             Manager.GameState = GameStateEnum.AcceptInput;
         }
 
+        public Cell GetRandomCell()
+        {
+            var cell = _cells[Random.Range(0, _height), Random.Range(0, _width)];
+            return cell;
+        }
         private void UpdateCells()
         {
             
@@ -156,10 +171,12 @@ namespace Assets.Scripts
                         else if (_cells[h, w].NextCellState == NextCellStateEnum.MakeAlive)
                         {
                             _cells[h, w].IsAlive = true;
+                            CellRevived?.Invoke(_cells[h, w].CellColor);
                         } else if (_cells[h, w].NextCellState == NextCellStateEnum.NoChange && _cells[h, w].IsAlive &&
                                    _cells[h, w].ChangeColor)
                         {
                             _cells[h, w].IsAlive = true;
+                            CellRevived?.Invoke(_cells[h, w].CellColor);
                         }
 
                         _cells[h, w].IsSumSet = false;
@@ -168,9 +185,20 @@ namespace Assets.Scripts
             
         }
 
+        public void FillRandomCells()
+        {
+            for (var h = 0; h < _height; h++)
+            {
+                for (var w = 0; w < _width; w++)
+                {
+                    _cells[h, w].IsAlive = Random.Range(0, 2) == 0;
+                }
+            }
+        }
+
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Manager.GameMode != GameModeEnum.Multiplayer && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter)))
             {
                 if (Manager.GameState == GameStateEnum.AcceptInput && _hasRunCoroutineFinished)
                 {

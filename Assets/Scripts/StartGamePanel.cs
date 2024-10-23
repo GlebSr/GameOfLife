@@ -7,23 +7,31 @@ using UnityEngine.SceneManagement;
 
 public class StartGamePanel : MonoBehaviour
 {
-    private GridGenerator _gridGenerator;
+    [SerializeField] private Player _playerPrefab;
+    [SerializeField] private SettingPanel _settingPanel;
+    [SerializeField] private ScoreManager _scoreManager;
 
+    private GridGenerator _gridGenerator;
     private void Start()
     {
         _gridGenerator = FindObjectOfType<GridGenerator>();
     }
-
     public void StartSoloGame()
     {
-        _gridGenerator.Initialize(GameModeEnum.SinglePlayer);
         gameObject.SetActive(false);
+        _settingPanel.Setup(GameModeEnum.SinglePlayer);
     }
 
     public void StartMultiplayerGame()
     {
-        _gridGenerator.Initialize(GameModeEnum.Multiplayer);
         gameObject.SetActive(false);
+        _gridGenerator.Initialize(GameModeEnum.Multiplayer);
+        Player player1 = Instantiate(_playerPrefab, _gridGenerator.GetRandomCell().SpawnPosition.position, _playerPrefab.transform.rotation).GetComponent<Player>();
+        Player player2 = Instantiate(_playerPrefab, _gridGenerator.GetRandomCell().SpawnPosition.position, _playerPrefab.transform.rotation).GetComponent<Player>();
+        player1.Initialize(2);
+        player2.Initialize(3);
+        _scoreManager.Initialize(player1, player2);
+        _scoreManager.gameObject.SetActive(true);
     }
     
     public void Exit()
